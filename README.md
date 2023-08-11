@@ -1,46 +1,40 @@
 # test-vue-router
 
-This template should help get you started developing with Vue 3 in Vite.
+This project was created with `yarn create vue`, with TS ESlint and vue-router. Everything else was default.
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-yarn
+```shell
+$ yarn set version latest
+$ yarn install
 ```
 
-### Compile and Hot-Reload for Development
+### Code changes for reproduction
 
-```sh
-yarn dev
+This added in the `AboutView.vue` component:
+
+```vue
+<script setup lang="ts">
+import { onBeforeRouteLeave } from 'vue-router';
+
+onBeforeRouteLeave(() => {
+    return false;
+});
+</script>
 ```
 
-### Type-Check, Compile and Minify for Production
+and this addter in the `router/index.ts` file:
 
-```sh
-yarn build
+```typescript
+router.afterEach(() => {
+   console.log('afterEach !');
+});
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Run the project
 
-```sh
-yarn lint
+```shell
+$ yarn dev
 ```
+Then open the page, and go to the "About" page.
+Now click the "Home" page, or use the browser back button.
+
+You will see that the Vue router does indeed block the navigation, but the `afterEach` listener is still executed.
